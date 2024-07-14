@@ -174,11 +174,11 @@
             voices = synth.getVoices();
             for (let i = 0; i < voices.length; i++) {
                 const option = document.createElement("option");
-                if (voices[i].lang === "en-US") {
+                // if (voices[i].lang === "jp-JP") {
                     option.textContent = `${voices[i].name} (${voices[i].lang})`;
                     option.value = i;
                     voiceSelect.appendChild(option);
-                }
+                //}
             }
         }
 
