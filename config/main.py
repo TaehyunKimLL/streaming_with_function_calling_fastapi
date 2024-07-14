@@ -21,6 +21,9 @@ class Config(Base):
     ASSISTANT_ID: str = os.getenv("ASSISTANT_ID")
     OPENAI_MODEL: str = "gpt-4o"
     OPENWEATHER_API_KEY: str = os.getenv("OPENWEATHER_API_KEY")
+    AZURE_API_KEY: str = os.getenv("AZURE_API_KEY")
+    AZURE_ENDPOINT: str = os.getenv("AZURE_ENDPOINT")
+    AZURE_API_VERSION: str = os.getenv("AZURE_API_VERSION")
 
 
 config = Config()

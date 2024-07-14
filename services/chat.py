@@ -6,7 +6,9 @@ import os
 import asyncio
 import json
 
-from openai import AsyncOpenAI as OpenAI
+# from openai import AsyncOpenAI as OpenAI
+from openai import AsyncAzureOpenAI as OpenAI
+
 from openai.types.beta import Assistant, Thread
 from openai.types.beta.assistant_stream_event import (
     ThreadRunRequiresAction,
@@ -41,7 +43,11 @@ class ChatService(metaclass=Singleton):
     tool_instances = {}
 
     def __init__(self) -> None:
-        self.client = OpenAI()
+        #self.client = OpenAI()
+        endpoint = config.AZURE_ENDPOINT
+        api_version = config.AZURE_API_VERSION
+        apikey=config.AZURE_API_KEY
+        self.client = OpenAI(azure_endpoint=endpoint,api_key=apikey,api_version=api_version)
         self.name = 'Activity Suggester'
         self.assistant_id = config.ASSISTANT_ID
         self.init_tools()
