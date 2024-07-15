@@ -5,11 +5,92 @@
 import os
 from datetime import datetime
 import aiohttp
+import json
 
 from config.main import config
 
 os.environ["OPENWEATHER_API_KEY"] = config.OPENWEATHER_API_KEY
 
+
+class DirectusDataSource:
+    directus_key = '8EesA0w7RHuULCZW6GOXvBY_DDKWCwZt'
+    directus_url = 'http://lifelift-directus.eastus2.azurecontainer.io:8055/'
+
+    @staticmethod
+    async def get_user_info(user_id: int=1) ->dict:
+        """Get User information from directus"""
+        try:
+            url = DirectusDataSource.directus_url+'items/user_basic_info/'+str(user_id)
+            
+            params = {
+                # "lat": latitude,
+                # "lon": longitude,
+                # "appid": os.environ.get("OPENWEATHER_API_KEY"),
+                # "month": current_month,
+                # "day": current_day,
+            }
+            result = None
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status != 200:
+                        return {"result": "Sorry, I couldn't find the weather information for the given location." }
+                    result = await response.json()
+            # we format the response to be more user friendly
+            return result
+        
+            # result = result.get("result")
+            # if not result:
+            #     return (
+            #         "Sorry, I couldn't find the weather information for the given location."
+            #     )
+            # return f"""
+            # For given Location:
+            #     Mean temperature: {result['temp']['mean']} Kelvin
+            #     Mean humidity: {result['humidity']['mean']} %
+            #     Mean wind_speed: {result['wind']['mean']} m/s
+            #     Mean pressure: {result['pressure']['mean']} hPa
+            #     Mean precipitation: {result['precipitation']['mean']} mm
+            # """
+        except Exception:  # pylint: disable=broad-except
+            return {"result": "Sorry, I couldn't find the weather information for the given location." }
+
+    @staticmethod
+    async def update_user_info(param,user_id=1):
+
+        print("-----------update_user_info---------------")
+        print(param)
+        data = param
+        try:
+            url = DirectusDataSource.directus_url+'items/user_basic_info/'+str(user_id)
+            
+            params = {
+                # "lat": latitude,
+                # "lon": longitude,
+                # "appid": os.environ.get("OPENWEATHER_API_KEY"),
+                # "month": current_month,
+                # "day": current_day,
+            }
+            headers = {
+                "Authorization": "Bearer "+DirectusDataSource.directus_key
+            }
+            result = None
+            async with aiohttp.ClientSession() as session:
+                async with session.patch(url,json=data,headers=headers) as response:
+                    if response.status != 200:
+                        return {"result": "Sorry, I couldn't find the weather information for the given location." }
+                    result = await response.json()
+            # we format the response to be more user friendly
+            return "### 기본 정보 갱신\n {}"+str(result['data'])
+        
+        except Exception:  # pylint: disable=broad-except
+            return  "### 기본 정보 갱신 실패\n"
+    
+
+        resp = requests.request(method='patch',url=DataSource.directus_url+'items/user_basic_info/'+str(user_id),json=data,headers={'Authorization': 'Bearer '+DataSource.directus_key, 'Contents-Type': 'application/json; chatset=utf-8'})
+        print ( resp.text )
+        data = json.loads(resp.text)
+
+        return "### 기본 정보 갱신\n {}"+str(data['data'])
 
 async def get_weather_information(latitude: int, longitude: int) -> str:
     """Gets the weather information for a given latitude and longitude."""
@@ -45,3 +126,5 @@ async def get_weather_information(latitude: int, longitude: int) -> str:
         """
     except Exception:  # pylint: disable=broad-except
         return "Sorry, I couldn't find the weather information for the given location."
+
+    

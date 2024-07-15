@@ -27,6 +27,8 @@ from utils.singleton import Singleton
 from services.assistant_setup import AssistantSetup
 from tools.definitions import GET_WEATHER_INFORMATION
 from tools.get_weather import get_weather_information
+from tools.definitions import LIFELIFT_TOOLS
+from tools.get_weather import DirectusDataSource
 
 os.environ["OPENAI_API_KEY"] = config.OPENAI_API_KEY
 
@@ -180,10 +182,19 @@ class ChatService(metaclass=Singleton):
         """
         This function initializes the tools.
         """
-        self.tools = [GET_WEATHER_INFORMATION]
-        self.tool_instances = {
-            "get_weather_information": get_weather_information,
+        self.tools = LIFELIFT_TOOLS
+
+        #  self.tools = [GET_WEATHER_INFORMATION]
+        self.tool_instances =  {
+            'update_user_information': DirectusDataSource.update_user_info
+            # 'record_user_activity': 'record_user_activity' ,
+            # 'insert_user_medical_history': 'insert_medical_history',
+            # 'record_schedule': 'record_schedule'
         }
+
+        # self.tool_instances = {
+        #     "get_weather_information": get_weather_information,
+        # }
 
     async def process_tool_call(self, tool_call, tool_outputs: list, extra_args=None):
         """
@@ -192,15 +203,17 @@ class ChatService(metaclass=Singleton):
         """
         result = None
         try:
-            arguments = json.loads(tool_call.function.arguments)
+            decoded_str = tool_call.function.arguments.encode('latin1').decode('utf8')
+            arguments = json.loads(decoded_str)
             function_name = tool_call.function.name
             if extra_args:
                 for key, value in extra_args.items():
                     arguments[key] = value
+
             if function_name not in self.tool_instances:
                 result = "Tool not found"
             else:
-                result = await self.tool_instances[function_name](**arguments)
+                result = await self.tool_instances[function_name](arguments)
         except Exception as e:  # pylint: disable=broad-except
             result = str(e)
             print(e)
