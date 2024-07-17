@@ -91,6 +91,54 @@ class DirectusDataSource:
         data = json.loads(resp.text)
 
         return "### 기본 정보 갱신\n {}"+str(data['data'])
+    
+    @staticmethod
+    async def  record_user_activity(param,user_id=1):
+        print("-----------update_user_activity---------------")
+        print(param)
+        data = param
+        data['user_id']=user_id 
+
+        try:
+            url = DirectusDataSource.directus_url+'items/user_activity'
+            headers = {
+                "Authorization": "Bearer "+DirectusDataSource.directus_key
+            }
+            result = None
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url,json=data,headers=headers) as response:
+                    if response.status != 200:
+                        return "### 사용자 행동 정보 저장 실패\n"
+                    result = await response.json()
+            # we format the response to be more user friendly
+            return "### 사용자 행동 정보 추가 성공\n {}"+str(result['data'])
+        
+        except Exception:  # pylint: disable=broad-except
+            return  "### 사용자 행동 정보 저장 실패\n"
+    
+    @staticmethod
+    async def  insert_medical_history(param,user_id=1):
+        print("-----------update_user_activity---------------")
+        print(param)
+        data = param
+        data['user_id']=user_id 
+
+        try:
+            url = DirectusDataSource.directus_url+'items/user_medical_history'
+            headers = {
+                "Authorization": "Bearer "+DirectusDataSource.directus_key
+            }
+            result = None
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url,json=data,headers=headers) as response:
+                    if response.status != 200:
+                        return "### 의료 정보 저장 실패\n"
+                    result = await response.json()
+            # we format the response to be more user friendly
+            return "### 의료 정보 추가 성공\n {}"+str(result['data'])
+        
+        except Exception:  # pylint: disable=broad-except
+            return  "### 의료 정보 저장 실패\n"
 
 async def get_weather_information(latitude: int, longitude: int) -> str:
     """Gets the weather information for a given latitude and longitude."""

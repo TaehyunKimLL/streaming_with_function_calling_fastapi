@@ -147,7 +147,11 @@ tool_item3 = {
                 "disease_name": {
                     "description": "병명. 병의 내용을 기록한다",
                     "type": "string"
-                }
+                },
+                "desc": {
+                "description": "병과 관련된 상세 사항. 입원, 치료 내용, 치료 결과등 병과 관련된 추가 정보를 저장",
+                "type": "string"
+                }      
             },
             "required": ['disease_name']
         }

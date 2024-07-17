@@ -186,9 +186,9 @@ class ChatService(metaclass=Singleton):
 
         #  self.tools = [GET_WEATHER_INFORMATION]
         self.tool_instances =  {
-            'update_user_information': DirectusDataSource.update_user_info
-            # 'record_user_activity': 'record_user_activity' ,
-            # 'insert_user_medical_history': 'insert_medical_history',
+            'update_user_information': DirectusDataSource.update_user_info,
+            'record_user_activity': DirectusDataSource.record_user_activity ,
+            'insert_user_medical_history': DirectusDataSource.insert_medical_history,
             # 'record_schedule': 'record_schedule'
         }
 
