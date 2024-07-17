@@ -82,6 +82,7 @@ class ChatService(metaclass=Singleton):
         """
         await self.create_assistant()
         thread = await self.create_or_get_thread(chat_id)
+        
         await self.client.beta.threads.messages.create(
             thread.id,
             role="user",
@@ -112,6 +113,18 @@ class ChatService(metaclass=Singleton):
                 metadata={
                     "chat_id": str(chat_id),
                 },
+            )
+            result = await DirectusDataSource.get_user_info()
+            user_data = result['data']
+            # user_data = {
+            #     'name': '김태현',
+            #     'age': 49,
+            #     'gender': 'male'
+            # }
+            await self.client.beta.threads.messages.create(
+                thread.id,
+                role="user",
+                content=json.dumps(user_data)
             )
             self.chat_to_thread_map[chat_id] = thread.id
         return thread

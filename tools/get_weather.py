@@ -29,9 +29,12 @@ class DirectusDataSource:
                 # "month": current_month,
                 # "day": current_day,
             }
+            headers = {
+                "Authorization": "Bearer "+DirectusDataSource.directus_key
+            }
             result = None
             async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
+                async with session.get(url,headers=headers) as response:
                     if response.status != 200:
                         return {"result": "Sorry, I couldn't find the weather information for the given location." }
                     result = await response.json()
