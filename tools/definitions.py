@@ -66,6 +66,7 @@ tool_item2 = {
     "function": {
         "name": "record_user_activity",
         "description": "대화 상대의 활동내역을 저장한다. 방문한 장소, 운동내역, 식사내역, 쉬는 활동 , 업무 , 자원봉사등 가능한 모든 활동 내역을 저장한다.",
+        "description": "会話相手の活動履歴を保存する。訪れた場所、運動記録、食事記録、休憩活動、仕事、ボランティアなど、可能な限りすべての活動履歴を保存する。",
         "parameters": {
             "type": "object",
             "properties": {
