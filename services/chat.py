@@ -26,7 +26,6 @@ from config.prompts import SYS_PROMPT
 from utils.singleton import Singleton
 from services.assistant_setup import AssistantSetup
 from tools.definitions import GET_WEATHER_INFORMATION
-from tools.get_weather import get_weather_information
 from tools.definitions import LIFELIFT_TOOLS
 from tools.get_weather import DirectusDataSource
 
@@ -116,11 +115,15 @@ class ChatService(metaclass=Singleton):
             )
             result = await DirectusDataSource.get_user_info()
             user_data = result['data']
-            # user_data = {
-            #     'name': '김태현',
-            #     'age': 49,
-            #     'gender': 'male'
-            # }
+
+            await self.client.beta.threads.messages.create(
+                thread.id,
+                role="user",
+                content=json.dumps(user_data)
+            )
+            result = await DirectusDataSource.get_user_activity()
+            user_data = result
+     
             await self.client.beta.threads.messages.create(
                 thread.id,
                 role="user",

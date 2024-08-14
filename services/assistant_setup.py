@@ -16,6 +16,7 @@ class AssistantSetup:
         self.tools = tools
         self.sys_prompt = sys_prompt
         self.name = name
+        # Assuming config.OPENAI_MODEL is intended to be a class attribute
         self.model = config.OPENAI_MODEL
 
     async def create_or_update_assistant(self):
@@ -29,18 +30,24 @@ class AssistantSetup:
             assistant = await self.create_new_assistant()
         return assistant
 
+
     async def update_existing_assistant(self, assistant_id):
         """
         This function updates the existing assistant
         with the new properties
         """
         try:
-            assistant = await self.client.beta.assistants.retrieve(assistant_id)
-            await self.update_assistant_properties(assistant)
-        except Exception as e: # pylint: disable=broad-except
-            print(f"Error updating assistant: {e}")
-            assistant = await self.create_new_assistant()
-        return assistant
+            # Corrected method call to match the OpenAI API client's expected usage
+            assistant = await self.client.beta.assistants.update(assistant_id, **{
+                "name": self.name,
+                "instructions": self.sys_prompt,
+                "model": self.model
+            })
+        except Exception as e:
+            # Handle exceptions appropriately here
+            print(f"Failed to update assistant: {e}")
+        else:
+            return assistant
 
     async def create_new_assistant(self):
         """

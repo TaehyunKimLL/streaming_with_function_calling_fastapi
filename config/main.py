@@ -24,6 +24,7 @@ class Config(Base):
     AZURE_API_KEY: str = os.getenv("AZURE_API_KEY")
     AZURE_ENDPOINT: str = os.getenv("AZURE_ENDPOINT")
     AZURE_API_VERSION: str = os.getenv("AZURE_API_VERSION")
+    DIRECTUS_KEY:str = os.getenv("DIRECTUS_KEY")
 
 
 config = Config()
